@@ -1,0 +1,31 @@
+- name: Create apicast directory
+  file: path=/opt/apicast state=directory
+
+- name: copy over the api cast files...
+  unarchive:
+    src: apicast-2.0.0.tar.gz
+    dest: /opt/apicast
+
+#- name: moving to apicast
+#  shell: cd /opt/apicast/apicast-2.0.0
+
+#- name:  compiling apicast...
+#  shell: sudo luarocks make apicast/*.rockspec --tree /usr/local/openresty/luajit
+
+- name: compile the apicast
+  shell: luarocks make apicast/*.rockspec --tree /usr/local/openresty/luajit
+  args:
+   chdir:  /opt/apicast/apicast-2.0.0
+  
+- name: checking the usage..
+  debug: msg="{{access_token}}"
+
+
+### THIS NEEDS A FIX - change the access token and also the domain name...
+- name: starting the apicast
+  shell: THREESCALE_PORTAL_ENDPOINT=https://8bb82bcc08163918b205da1257ec3bdbf36b7af4a94a4b8bd890b88464644afb@redhatmsumner-admin.3scale.net  bin/apicast -d -vv
+  args:
+   chdir:  /opt/apicast/apicast-2.0.0/apicast
+
+
+### Call this like so from the host... : curl -v -X GET "http://192.168.33.10:8080/search?term=beyonce&entity=musicVideo&user_key=7b86fdea742e29594449ab12f0b487c0"

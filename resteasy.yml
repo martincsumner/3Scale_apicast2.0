@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: yes
+  pre_tasks:
+
+  - name: install unzip  
+    yum: name='unzip' state=latest    
+
+  - name: install gcc  
+    yum: name='gcc' state=present    
+
+  - name: install tar  
+    yum: name='tar' state=latest    
+#  put this back
+#  - name: performing base yum update.
+#    yum: name='*' state=latest  
+
+  vars_files:
+   - vars/defaults.yml
+ 
+ # tasks:
+
+
+
+  roles:
+   - openresty
+   - restyother
+   - geerlingguy.repo-epel
+   - apicast 
+   #- nginx_files
+
+ # post_tasks:
+ # - name: starting nginx 
+ #   shell: sudo openresty -c /usr/local/openresty/nginx/conf/nginx_*.conf   
